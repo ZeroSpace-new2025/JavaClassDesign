@@ -15,16 +15,16 @@ import common.saver.exception.LoadException;
 /**
  * 车辆管理类，负责管理车辆的添加、查询等操作
  */
-public class CarManeger {
+public class CarManager {
     /** 存储车辆信息的 Map，键为车辆 ID，值为车辆对象 */
     private Map<Long, Car> cars = new HashMap<>();
     /** 单例模式的实例 */
-    private static CarManeger _intrnce;
+    private static CarManager _intrnce;
 
     /** 私有构造函数，防止外部实例化 */
-    public static CarManeger getInstance() {
+    public static CarManager getInstance() {
         if (_intrnce == null) {
-            _intrnce = new CarManeger();
+            _intrnce = new CarManager();
             _intrnce.load();
         }
         return _intrnce;
@@ -34,6 +34,15 @@ public class CarManeger {
     public static void despose() {
         _intrnce = null;
     }
+
+    /** 私有构造函数，注册 JVM 关闭钩子以确保在程序退出时保存车辆数据 */
+    private CarManager() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            save();
+        }));
+    }
+
+     /** 获取所有车辆信息，返回一个不可修改的 Map */
 
     /** 获取所有车辆信息，返回一个不可修改的 Map */
     public Map<Long, Car> getCars() {

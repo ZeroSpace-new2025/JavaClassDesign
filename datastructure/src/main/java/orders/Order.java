@@ -1,0 +1,55 @@
+package orders;
+
+import cars.CarManager;
+import lombok.Data;
+
+@Data
+public class Order {
+    private long orderID;
+    private long carID;
+    private long accountID;
+    private String startTime;
+    private String endTime;
+    private double price;
+    private OrderState state;
+
+    /** 构造函数，初始化订单信息
+     * @param orderID 订单 ID
+     * @param carID 车辆 ID
+     * @param accountID 账户 ID
+     * @param startTime 租赁开始时间，格式为 "yyyyMMdd"
+     * @param endTime 租赁结束时间，格式为 "yyyyMMdd"
+     */
+    public Order(long orderID, long carID, long accountID, String startTime, String endTime) {
+        this.orderID = orderID;
+        this.carID = carID;
+        this.accountID = accountID;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        double price = CarManager.getInstance().getCarByID(carID).getPrice() * calculateDays(startTime, endTime);  
+        this.price = price;
+        this.state = OrderState.PENDING;
+    }
+    
+    /** 计算租赁天数，简单计算方法，假设每个月30天，每年360天 
+     * @param startTime 租赁开始时间，格式为 "yyyyMMdd"
+     * @param endTime 租赁结束时间，格式为 "yyyyMMdd"
+     * @return 返回租赁的天数
+     *
+    */
+    public static int calculateDays(String startTime, String endTime) {
+
+        int startYear = Integer.parseInt(startTime.substring(0,4));
+        int startMonth = Integer.parseInt(startTime.substring(4,6));
+        int startDay = Integer.parseInt(startTime.substring(6,8));
+        int endYear = Integer.parseInt(endTime.substring(0,4));
+        int endMonth = Integer.parseInt(endTime.substring(4,6));
+        int endDay = Integer.parseInt(endTime.substring(6,8));
+        
+        // 简单计算天数，假设每个月30天，每年360天
+        return (endYear - startYear) * 360 + (endMonth - startMonth) * 30 + (endDay - startDay);
+    }
+
+    public Order() {
+    }
+}
