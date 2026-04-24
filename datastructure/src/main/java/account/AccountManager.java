@@ -92,6 +92,10 @@ public class AccountManager {
         return true;
     }
 
+    /** 
+     * 删除账户，根据用户名删除对应的账户信息
+     * @param username 用户名
+     */
     public void  deleteAccount(String username) {
         if (!accounts.containsKey(Account.getRawID(username))) {
             return ;
@@ -100,15 +104,32 @@ public class AccountManager {
         saveAccounts(); 
     }
 
+    /**
+     * 根据用户名获取账户信息，如果账户不存在则返回 null
+     * @param username 用户名
+     * @return 返回对应的账户信息，如果账户不存在则返回 null
+     */
     public Account getAccount(String username) {
         return accounts.get(Account.getRawID(username));
     }
 
+    /**
+     * 尝试登录，根据用户名和密码验证账户信息，如果验证成功返回 true，否则返回 false
+     * @param username 用户名
+     * @param password 密码
+     * @return 如果登录成功返回 true，否则返回 false
+     */
     public boolean tryLogin(String username, String password) {
         Account account = accounts.get(Account.getRawID(username));
         return (account != null && account.getPassword().equals(password)); 
     }
 
+    /**
+     * 检查账户是否具有足够的权限，根据账户 ID 和所需的权限级别进行验证，如果账户存在且权限级别满足要求则返回 true，否则返回 false
+     * @param ID 账户 ID
+     * @param requiredLevel 所需的权限级别
+     * @return 如果账户存在且权限级别满足要求则返回 true，否则返回 false
+     */
     public boolean IsAllow(long ID, AccountLevel requiredLevel) {
         Account account = accounts.get(ID);
         return (account != null && account.getLevel().getLevel() >= requiredLevel.getLevel());
