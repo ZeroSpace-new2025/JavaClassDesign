@@ -1,0 +1,16 @@
+{
+    "levels": [
+        {
+            "accountGroup": "admin",
+            "allowOperationTag": ["*"]
+        },
+        {
+            "accountGroup": "user",
+            "allowOperationTag": ["read", "write"]
+        },
+        {
+            "accountGroup": "guest",
+            "allowOperationTag": ["read"]
+        }
+    ]
+}

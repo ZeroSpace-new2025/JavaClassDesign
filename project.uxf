@@ -1,0 +1,57 @@
+<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><element><id>UMLClass</id><coordinates><x>136</x><y>152</y><w>192</w><h>152</h></coordinates><panel_attributes>&lt;&lt;EnitityClass&gt;&gt;
+Package::account
+{Account}
+--
+-username : string
+-key : string
+-ID : long
+-level : enum AccountLevel
+--
++get()
++set()
+_+GetRawID(username : string) : long_
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>336</x><y>40</y><w>328</w><h>200</h></coordinates><panel_attributes>&lt;&lt;ControlClass&gt;&gt;
+Package::account
+{AccountsManager}
+--
+-AllAccount : map(ID:long , account : Account)
+-nowAccount : Account
+_-_instance : AccountsManager_
+--
+-new()
++getInstance () : AccountsManager
+-Load()
+-Save()
++Remove(ID : long) : bool
++Register(username : string , key : string , level : AccountLevel) :bool
++ChangeLevel(ID : long,level : AccountLevel) : bool
+-CreateNormal()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>184</x><y>40</y><w>144</w><h>104</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
+Package::account
+{AccountLevel}
+--
++GUEST(0)
++USER(1)
++ADMIN(25565)
+--
++getLevel() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>144</x><y>352</y><w>336</w><h>104</h></coordinates><panel_attributes>&lt;&lt;UtilityClass&gt;&gt;
+common.saver
+{DataSaveManager}
+--
+-GSON : Gson
+--
++save(name : String, data : T, id : int, savePath : Path) : boolean
++load(savePath : Path, type : Type) : Object</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>136</x><y>480</y><w>360</w><h>152</h></coordinates><panel_attributes>common.saver
+{SaveManager}
+--
+-SAVE_DIR : String
+-instance : SaveManager
+-savePath : String
+_-_instance : SaveManager
+--
++getInstance() : SaveManager
++save(name : String, data : T, id : int) : boolean
++load(name : String, id : int, clazz : Type) : Object
++saveByFullPath(name : String, data : T, id : int, savePath : Path) : boolean
++loadByFullPath(name : String, id : int, clazz : Type, savePath : Path) : Object
+-getSavePath(name : String, id : int) : Path</panel_attributes><additional_attributes></additional_attributes></element></diagram>

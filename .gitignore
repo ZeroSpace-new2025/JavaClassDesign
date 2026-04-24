@@ -1,0 +1,37 @@
+# --- Maven 构建产物 ---
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# --- 编译类文件 ---
+*.class
+*.jar
+*.war
+*.ear
+
+# --- IDE 配置文件 (IntelliJ IDEA / Eclipse / VS Code) ---
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+
+# --- 系统临时文件 ---
+.DS_Store
+Thumbs.db
+
+# --- 日志文件 ---
+*.log
+
+# --- 你的数据保存目录 (根据你的代码推测) ---
+# 因为你在代码中使用了 "saves" 目录来存数据，通常不需要提交数据文件
+saves/
