@@ -1,6 +1,6 @@
 package orders;
 
-import cars.CarManager;
+import cars.CarManagerNew;
 import lombok.Data;
 
 @Data
@@ -26,7 +26,7 @@ public class Order {
         this.accountID = accountID;
         this.startTime = startTime;
         this.endTime = endTime;
-        double price = CarManager.getInstance().getCarByID(carID).getPrice() * calculateDays(startTime, endTime);  
+        double price = CarManagerNew.getInstance().getCarByID(carID).getPrice() * calculateDays(startTime, endTime);  
         this.price = price;
         this.state = OrderState.PENDING;
     }

@@ -1,0 +1,38 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "editor.semanticTokenColorCustomizations": {
+        "enabled": true,
+        "rules": {
+            "variable": "#FF0000",
+            "parameter": "#ea12d5",
+            "method": "#41d0f7",
+            "class": "#FFD700",
+            "enum": "#FFD700"
+        }
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "comment",
+                "settings": {
+                    "foreground": "#6A9955",
+                    "fontStyle": "italic"
+                }
+            },
+            {
+                "scope": [
+                    "variable.language.this.java",
+                    "storage.type.primitive.java",
+                    "keyword",
+                    "keyword.control",
+                    "keyword.operator",
+                    "storage.type",
+                    "storage.modifier"
+                ],
+                "settings": {
+                    "foreground": "#BA55D3"
+                }
+            }
+        ]
+    }
+}
