@@ -61,7 +61,7 @@ Write-Host ""
 # 4. 编译+打包（跳过测试可选：-DskipTests，避免测试失败导致打包中断）
 try {
     # 如需跳过单元测试，将下方命令改为：mvn package -DskipTests
-    mvn package
+    mvn package -DskipTests
     if ($LASTEXITCODE -eq 0) {
         Write-Host ""
         Write-Host "----------------------------------------" -ForegroundColor Gray

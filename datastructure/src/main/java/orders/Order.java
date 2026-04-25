@@ -1,10 +1,13 @@
 package orders;
 
-import cars.CarManagerNew;
+import ManagerBasic.ManagedData;
+import cars.CarManager;
 import lombok.Data;
+import orders.exception.OrderTimeException;
+import university.App;
 
 @Data
-public class Order {
+public class Order implements ManagedData{
     private long orderID;
     private long carID;
     private long accountID;
@@ -12,6 +15,7 @@ public class Order {
     private String endTime;
     private double price;
     private OrderState state;
+    private OrderNature nature;
 
     /** 构造函数，初始化订单信息
      * @param orderID 订单 ID
@@ -19,16 +23,33 @@ public class Order {
      * @param accountID 账户 ID
      * @param startTime 租赁开始时间，格式为 "yyyyMMdd"
      * @param endTime 租赁结束时间，格式为 "yyyyMMdd"
+     * @throws OrderTimeException 
      */
-    public Order(long orderID, long carID, long accountID, String startTime, String endTime) {
+    public Order(long orderID, long carID, String startTime, String endTime, OrderNature nature) throws OrderTimeException {
         this.orderID = orderID;
         this.carID = carID;
-        this.accountID = accountID;
+        this.accountID = App.getInstance().getLogInAccount().getID();
         this.startTime = startTime;
         this.endTime = endTime;
-        double price = CarManagerNew.getInstance().getCarByID(carID).getPrice() * calculateDays(startTime, endTime);  
+        var car = CarManager.getInstance().getCarByID(carID);
+        double price = car.getPrice() * calculateDays(startTime, endTime);
+        if (price < 0) {
+            throw new OrderTimeException("结束时间必须晚于开始时间");
+        }
         this.price = price;
         this.state = OrderState.PENDING;
+        this.nature = nature;
+
+        switch (nature) {
+            case RENT:
+                car.setState(cars.CarState.ON_RENT);
+                break;
+            case BOOKING:
+                car.setState(cars.CarState.On_BOOKING);
+                break;
+            default:
+                break;
+        }
     }
     
     /** 计算租赁天数，简单计算方法，假设每个月30天，每年360天 
@@ -51,5 +72,9 @@ public class Order {
     }
 
     public Order() {
+    }
+
+    public long getID() {
+        return orderID;
     }
 }
