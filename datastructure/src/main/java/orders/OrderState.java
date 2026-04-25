@@ -7,4 +7,5 @@ public enum OrderState {
     CANCELED,   // 已取消
     REVIEWING,   //审核中
     REJECTED,   //审核未通过
+    REVIEWED   //已审核
 }

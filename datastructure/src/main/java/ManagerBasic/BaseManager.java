@@ -67,6 +67,6 @@ public interface BaseManager<T> {
      * 
      * @return 管理器中所有对象的列表
      */
-    public List<T> ListAll();
+    public List<T> listAll();
 
 }

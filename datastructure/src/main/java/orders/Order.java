@@ -45,7 +45,7 @@ public class Order implements ManagedData{
                 car.setState(cars.CarState.ON_RENT);
                 break;
             case BOOKING:
-                car.setState(cars.CarState.On_BOOKING);
+                car.setState(cars.CarState.ON_BOOKING);
                 break;
             default:
                 break;

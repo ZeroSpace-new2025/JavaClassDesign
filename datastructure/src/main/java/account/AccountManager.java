@@ -130,7 +130,7 @@ public class AccountManager {
      * @param requiredLevel 所需的权限级别
      * @return 如果账户存在且权限级别满足要求则返回 true，否则返回 false
      */
-    public boolean IsAllow(long ID, AccountLevel requiredLevel) {
+    public boolean isAllowed(long ID, AccountLevel requiredLevel) {
         Account account = accounts.get(ID);
         return (account != null && account.getLevel().getLevel() >= requiredLevel.getLevel());
     }

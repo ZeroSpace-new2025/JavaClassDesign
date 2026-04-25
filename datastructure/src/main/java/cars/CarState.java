@@ -4,5 +4,5 @@ public enum CarState {
     ON_RENT,
     ON_REPAIR,
     AVAILABLE,
-    On_BOOKING
+    ON_BOOKING
 }

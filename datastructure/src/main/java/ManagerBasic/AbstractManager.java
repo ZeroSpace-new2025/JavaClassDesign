@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import account.AccountLevel;
 import university.App;
 
 public abstract class AbstractManager<T extends ManagedData> implements BaseManager<T>
@@ -77,7 +78,7 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
     }
 
     @Override
-    public List<T> ListAll() {
+    public List<T> listAll() {
         return new ArrayList<>(items.values());
     }
 
@@ -99,7 +100,11 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
      * @return 当前账户的权限等级
      */
     public int getAccountLevel() {
-        return App.getInstance().getLogInAccount().getLevel().getLevel();
+        var account = App.getInstance().getLogInAccount();
+        if (account != null) {
+            return account.getLevel().getLevel();
+        }
+        return AccountLevel.GUEST.getLevel();
     }
 
     /**
