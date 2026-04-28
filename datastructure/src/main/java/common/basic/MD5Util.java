@@ -23,4 +23,8 @@ public class MD5Util {
             throw new RuntimeException("MD5 加密失败", e);
         }
     }
+
+    private MD5Util() {
+        // 私有构造函数，防止实例化
+    }
 }

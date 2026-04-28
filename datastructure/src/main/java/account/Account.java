@@ -2,10 +2,9 @@ package account;
 
 import common.basic.MD5Util;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
-public class Account {
+public class Account implements ManagerBasic.ManagedData {
 
     /** 账户的用户名。 */
     private String username;
@@ -16,7 +15,6 @@ public class Account {
     private AccountLevel level;
 
     /** 账户的唯一 ID，根据用户名生成。 */
-    @Getter
     private long ID;
 
     /** 构造函数，初始化账户信息。 */
@@ -38,5 +36,10 @@ public class Account {
     public static long getRawID(String username) {
         var hash = MD5Util.md5(username);
         return Long.parseLong(hash.substring(0, 16), 16);
+    }
+
+    @Override
+    public long getID() {
+        return ID;
     }
 }
