@@ -1,6 +1,9 @@
 package account;
 
+import java.lang.reflect.Type;
 import java.util.List;
+
+import com.google.gson.reflect.TypeToken;
 
 /**
  * AccountManager 是一个单例类，负责管理账户信息。它继承自 AbstractManager<Account>，提供了账户的增删改查功能。
@@ -42,12 +45,24 @@ public class AccountManager extends ManagerBasic.AbstractManager<Account> {
 
     /**
     * 根据用户名获取账户对象。
+    * 策略1：通过 computed ID 查找
+    * 策略2（降级）：遍历账户列表按用户名直接匹配
     * @param username 用户名
     * @return 返回对应的账户对象，如果不存在则返回 null。
     */
     public Account getByUsername(String username) {
         long id = Account.getRawID(username);
-        return getByID(id);
+        Account account = getByID(id);
+        
+        if (account == null) {
+            for (Account acc : listAll()) {
+                if (acc.getUsername().equals(username)) {
+                    return acc;
+                }
+            }
+        }
+        
+        return account;
     }
 
     /**
@@ -78,6 +93,33 @@ public class AccountManager extends ManagerBasic.AbstractManager<Account> {
         return update(newAccount);
     }
 
+    @Override
+    public boolean add(Account account) {
+        boolean success = super.add(account);
+        if (success) {
+            save(0);
+        }
+        return success;
+    }
+
+    @Override
+    public boolean remove(Account account) {
+        boolean success = super.remove(account);
+        if (success) {
+            save(0);
+        }
+        return success;
+    }
+
+    @Override
+    public boolean update(Account account) {
+        boolean success = super.update(account);
+        if (success) {
+            save(0);
+        }
+        return success;
+    }
+
     /** 检查是否存在指定用户名的账户。
      * @param username 用户名
      * @return 如果存在返回 true，否则返回 false。
@@ -99,5 +141,10 @@ public class AccountManager extends ManagerBasic.AbstractManager<Account> {
         }
         if(!account.getPassword().equals(password))return 2;
         return 0;
+    }
+
+    @Override
+    public Type getManagerType() {
+        return new TypeToken<Account>(){}.getType();
     }
 }

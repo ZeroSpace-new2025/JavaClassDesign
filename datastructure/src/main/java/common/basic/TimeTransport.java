@@ -1,5 +1,10 @@
 package common.basic;
 
+/**
+ * 时间转换工具类，提供时间的解析、格式化、天数计算等功能。
+ * 该类为工具类，不可实例化，所有方法均为静态方法。
+ * 支持的时间格式为 "yyyyMMdd"，例如 "20240101"。
+ */
 public class TimeTransport {
 
     /**

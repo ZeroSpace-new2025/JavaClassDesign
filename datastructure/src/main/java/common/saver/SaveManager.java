@@ -44,7 +44,7 @@ public class SaveManager {
     
     /** 初始化保存管理器。 */
     private SaveManager() throws IOException {
-        File rootDir = new File("");
+        File rootDir = new File(System.getProperty("user.dir"));
         File saveDir = new File(rootDir, SAVE_DIR);
         if (!saveDir.exists()) {
             saveDir.mkdirs();

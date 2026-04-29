@@ -1,6 +1,5 @@
 package ManagerBasic;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,6 +101,10 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
         return List.copyOf(items.values());
     }
 
+    /**
+     * 获取管理器中数据项的数量。
+     * @return 数据项数量
+     */
     public int size() {
         return items.size();
     }
@@ -114,7 +117,22 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
         clear();
         List<T> dataList;
 
-        Class<T> actualType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        Class<T> actualType;
+        try {
+            actualType = (Class<T>) getManagerType();
+        } catch (ClassCastException e) {
+            System.out.println("无法获取泛型类型参数，使用默认数据列表。");
+            dataList = defaultList();
+            if (dataList == null) {
+                dataList = new ArrayList<>();
+            }
+            for (T data : dataList) {
+                if (data == null) continue;
+                items.put(data.getID(), data);
+            }
+            return;
+        }
+        
         Type dataListType = new TypeToken<List<T>>() {}.getType();
         try {
             Object loadedData = SaveManager.getInstance().load(getTypeName(), id, dataListType);
@@ -129,8 +147,12 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
                 List<?> rawList = (List<?>) loadedData;
                 dataList = new ArrayList<>();
                 for (Object obj : rawList) {
-                    T realData = gson.fromJson(gson.toJson(obj), actualType);
-                    dataList.add(realData);
+                    try {
+                        T realData = gson.fromJson(gson.toJson(obj), actualType);
+                        dataList.add(realData);
+                    } catch (Exception e) {
+                        System.out.println("反序列化数据项失败: " + e.getMessage());
+                    }
                 }
             }
         
@@ -138,15 +160,20 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
             System.out.println("加载数据失败: " + e.getMessage());
             System.out.println("使用默认数据列表。");
             dataList = defaultList();
-        }
-        if(dataList == null || dataList.isEmpty()){
+        } catch (Exception e) {
+            System.out.println("加载数据时发生未知错误: " + e.getMessage());
             dataList = defaultList();
         }
-        if(dataList == null){
+        
+        if (dataList == null || dataList.isEmpty()) {
+            dataList = defaultList();
+        }
+        if (dataList == null) {
             dataList = new ArrayList<>();
         }
+        
         for (T data : dataList) {
-            if(data == null) continue;
+            if (data == null) continue;
             items.put(data.getID(), data);
         }
     }
@@ -170,4 +197,11 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
      * @return 返回数据类型的名称。
      */
     public abstract String getTypeName();
+
+    /**
+     * 获取 Gson 反序列化时使用的类型信息。
+     * 子类必须实现该方法以返回正确的泛型类型。
+     * @return 泛型类型 T 的 Type 对象
+     */
+    public abstract Type getManagerType();
 }

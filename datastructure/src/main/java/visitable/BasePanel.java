@@ -3,6 +3,11 @@ package visitable;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 基础面板抽象类，提供通用的列表展示、筛选和详情查看功能。
+ * 子类需实现抽象方法以自定义筛选选项、数据展示和筛选逻辑。
+ * @param <T> 数据项类型
+ */
 public abstract class BasePanel<T> extends JPanel {
     protected static final int WIDTH = 1024;
     protected static final int HEIGHT = 768;
@@ -14,6 +19,9 @@ public abstract class BasePanel<T> extends JPanel {
     protected JList<JPanel> dataList; // 数据列表（每行用JPanel封装详情）
     protected JScrollPane listScrollPane; // 列表滚动面板
 
+    /**
+     * 构造函数，初始化面板基础设置。
+     */
     public BasePanel() {
         // 面板基础设置
         setSize(WIDTH, HEIGHT);
@@ -75,11 +83,14 @@ public abstract class BasePanel<T> extends JPanel {
      * 初始化列表项点击事件：点击后弹窗展示详情
      */
     private void initListClickListener() {
-        dataList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) { // 避免重复触发
-                var selectedItem = dataList.getSelectedValue();
-                if (selectedItem != null) {
-                    showDetailDialog(selectedItem);
+        dataList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) { // 双击触发
+                    var selectedItem = dataList.getSelectedValue();
+                    if (selectedItem != null) {
+                        showDetailDialog(selectedItem);
+                    }
                 }
             }
         });
@@ -101,10 +112,12 @@ public abstract class BasePanel<T> extends JPanel {
     protected void showDetailDialog(JPanel detailPanel, JPanel actionPanel) {
         JDialog dialog = new JDialog();
         dialog.setTitle("详情");
-        dialog.setSize(800, 400);
         dialog.setModal(true); // 模态弹窗
-        dialog.setLocationRelativeTo(this); // 相对当前面板居中
+        dialog.setLayout(new BorderLayout());
 
+        // 为主容器设置首选大小，确保 JScrollPane 有足够空间
+        detailPanel.setPreferredSize(new Dimension(750, 300));
+        
         // 主容器使用BorderLayout
         JPanel mainContainer = new JPanel(new BorderLayout());
         mainContainer.add(new JScrollPane(detailPanel), BorderLayout.CENTER);
@@ -115,9 +128,21 @@ public abstract class BasePanel<T> extends JPanel {
         }
         
         dialog.add(mainContainer);
+        dialog.setSize(800, 400);
+        dialog.setLocationRelativeTo(this); // 相对当前面板居中
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        
+        // 确保布局生效
+        dialog.revalidate();
+        dialog.repaint();
+        
         dialog.setVisible(true);
     }
 
+    /**
+     * 刷新列表面板数据。
+     * @param newData 新的数据面板数组
+     */
     protected void refreshListPanel(JPanel[] newData) {
         dataList.setListData(newData);
     }
@@ -144,6 +169,12 @@ public abstract class BasePanel<T> extends JPanel {
     */
     protected abstract JList<JPanel> childInitDataList();
 
+    /**
+     * 创建详情面板的默认实现，展示数据项的 toString 内容。
+     * 子类可重写此方法提供更丰富的详情展示。
+     * @param dataItem 数据项对象
+     * @return 详情面板
+     */
     protected JPanel createDetailPanel(T dataItem) {
         // 默认实现：简单展示toString内容，子类可重写提供更丰富的详情展示
         JPanel panel = new JPanel();

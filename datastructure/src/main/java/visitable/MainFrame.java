@@ -4,14 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * 主窗口：1024*768
- * 顶部导航：car / order / account 切换按钮
- * 每个页面：下拉筛选 + 输入框 + 筛选按钮 + 数据列表 + 点击列表弹窗详情
+ * 主窗口类，提供汽车租赁系统的图形用户界面。
+ * 窗口尺寸为 1024x768，包含顶部导航栏和内容区域。
+ * 支持 Car、Order、Account 三个页面的切换。
  */
 public class MainFrame extends JFrame {
 
     private static MainFrame instance;
 
+    /**
+     * 获取 MainFrame 的单例实例。
+     * @return MainFrame 单例实例
+     */
     public static MainFrame getInstance() {
         if (instance == null) {
             instance = new MainFrame();
@@ -19,6 +23,9 @@ public class MainFrame extends JFrame {
         return instance;
     }
 
+    /**
+     * 初始化主窗口并在 EDT 线程中显示。
+     */
     public void init() {
         //  Swing窗口UI线程启动
         SwingUtilities.invokeLater(() -> {
@@ -36,6 +43,10 @@ public class MainFrame extends JFrame {
     private JButton accountButton;
     private CardLayout cardLayout; // 卡片布局
 
+    /**
+     * 构造函数，初始化主窗口的布局、导航按钮和内容面板。
+     * 创建 CarPanel、OrderPanel、AccountPanel 三个页面，并设置跨面板刷新回调。
+     */
     public MainFrame() {
         setTitle("Visitable Pattern Demo");
         setSize(WIDTH, HEIGHT);
@@ -57,10 +68,18 @@ public class MainFrame extends JFrame {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
 
+        // 创建面板实例
+        CarPanel carPanel = new CarPanel();
+        OrderPanel orderPanel = new OrderPanel();
+        AccountPanel accountPanel = new AccountPanel();
+        
+        // 设置订单刷新回调：CarPanel创建订单后刷新OrderPanel
+        carPanel.setOrderRefreshCallback(() -> orderPanel.refreshData());
+
         // 添加不同页面的面板
-        contentPanel.add(new CarPanel(), "Car");
-        contentPanel.add(new OrderPanel(), "Order");
-        contentPanel.add(new AccountPanel(), "Account");
+        contentPanel.add(carPanel, "Car");
+        contentPanel.add(orderPanel, "Order");
+        contentPanel.add(accountPanel, "Account");
 
         // 添加导航和内容面板到主窗口
         setLayout(new BorderLayout());

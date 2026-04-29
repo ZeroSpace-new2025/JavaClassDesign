@@ -2,9 +2,27 @@ package business;
 
 import account.*;
 
+/**
+ * 登录账户业务类，负责账户的登录、登出、注册、权限验证等操作。
+ * 采用单例模式，全局共享同一登录状态。
+ */
 public class LoginAccount {
 
+    private static LoginAccount _instance;
 
+    private LoginAccount() {
+    }
+
+    /**
+     * 获取 LoginAccount 的单例实例。
+     * @return LoginAccount 单例实例
+     */
+    public static LoginAccount getInstance() {
+        if (_instance == null) {
+            _instance = new LoginAccount();
+        }
+        return _instance;
+    }
 
 
 
@@ -16,15 +34,47 @@ public class LoginAccount {
      * @return 如果登录成功返回 true，否则返回 false
      */
     public boolean login(String username, String password) {
-        var account = AccountManager.getInstance().getByID(Account.getRawID(username));
-        if (account == null) {
-            return false; // 用户不存在
+        if(_account != null) {
+            System.out.println("[LoginAccount] Already logged in as " + _account.getUsername());
+            return false;
         }
-        if( account.getPassword().equals(password)){
-            _account = account; // 登录成功，保存账户信息
-            return true; // 登录成功
-        } // 验证密码
-        return false; // 密码错误
+
+        if(username == null || password == null) {
+            System.out.println("[LoginAccount] Username or password cannot be null");
+            return false;
+        }
+
+        long rawID = Account.getRawID(username);
+        System.out.println("[LoginAccount] Attempting login for user: " + username + ", rawID: " + rawID);
+        
+        // 策略1：通过 computed ID 查找
+        var account = AccountManager.getInstance().getByID(rawID);
+        
+        // 策略2（降级）：如果 ID 不匹配，遍历账户列表按用户名直接匹配
+        if (account == null) {
+            System.out.println("[LoginAccount] ID lookup failed, falling back to username match");
+            account = AccountManager.getInstance().getByUsername(username);
+        }
+        
+        if (account == null) {
+            System.out.println("[LoginAccount] User not found: " + username);
+            System.out.println("[LoginAccount] Available accounts in manager:");
+            for (var acc : AccountManager.getInstance().listAll()) {
+                System.out.println("  - ID: " + acc.getID() + ", Username: " + acc.getUsername());
+            }
+            return false;
+        }
+        
+        System.out.println("[LoginAccount] Found account: " + account.getUsername() + ", ID: " + account.getID());
+        
+        if(account.getPassword().equals(password)){
+            System.out.println("[LoginAccount] Login successful: " + username);
+            _account = account;
+            return true;
+        }
+
+        System.out.println("[LoginAccount] Incorrect password for user: " + username);
+        return false;
     }
 
     /**
@@ -55,10 +105,13 @@ public class LoginAccount {
             return false; // 用户已存在
         }
         
-        if(_account == null && level.getLevel() >= AccountLevel.USER.getLevel()) {
-            return false; // 没有登录账户，且新账户权限级别不低于普通用户，不允许添加
+        if(_account == null) {
+            // 未登录状态下，只允许注册 USER 级别，不允许注册 ADMIN
+            if (level.getLevel() > AccountLevel.USER.getLevel()) {
+                return false;
+            }
         }
-        else if(_account != null && _account.getLevel().getLevel() < level.getLevel()) {
+        else if(_account.getLevel().getLevel() < level.getLevel()) {
             return false; // 当前登录账户权限级别低于新账户权限级别，不允许添加
         }
 
@@ -154,4 +207,38 @@ public class LoginAccount {
         return _account.getLevel().getLevel() >= level.getLevel(); // 当前登录账户权限级别高于或等于指定权限级别，允许访问
     }
 
+    /**
+     * 获取所有账户列表，仅当当前登录账户权限为 Admin 时允许查看。
+     * @return 账户列表，若无权限则返回空数组
+     */
+    public Account[] listAllAccounts() {
+        if (!isAllow(AccountLevel.ADMIN)) {
+            return new Account[0];
+        }
+        return AccountManager.getInstance().listAll().toArray(new Account[0]);
+    }
+
+    /**
+     * 根据 ID 获取账户信息，仅当当前登录账户权限为 Admin 或查询的是本人账户时允许查看。
+     * @param id 账户 ID
+     * @return 账户对象，若无权限或不存在则返回 null
+     */
+    public Account getAccountByID(long id) {
+        if (isAllow(AccountLevel.ADMIN) || (_account != null && _account.getID() == id)) {
+            return AccountManager.getInstance().getByID(id);
+        }
+        return null;
+    }
+
+    /**
+     * 根据用户名获取账户信息，仅当当前登录账户权限为 Admin 或查询的是本人账户时允许查看。
+     * @param username 用户名
+     * @return 账户对象，若无权限或不存在则返回 null
+     */
+    public Account getAccountByUsername(String username) {
+        if (isAllow(AccountLevel.ADMIN) || (_account != null && _account.getUsername().equals(username))) {
+            return AccountManager.getInstance().getByUsername(username);
+        }
+        return null;
+    }
 }

@@ -1,11 +1,10 @@
 package common.saver;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +32,7 @@ import common.saver.exception.NotFoundFileException;
      */
     public static <T> boolean save(String name, T data,int id,Path savePath) 
     {
+        System.out.println("最终保存文件路径：" + savePath.toFile().getAbsolutePath());
         String json = GSON.toJson(data);
         try
         {
@@ -48,9 +48,7 @@ import common.saver.exception.NotFoundFileException;
     /**
      * 从文件加载数据。
      * 
-     * @param name 数据名称
-     * @param id   数据ID
-     * @param savePath 保存文件对象
+     * @param savePath 保存文件路径
      * @param type 数据对象的类类型
      * @return 加载的数据对象
      */
@@ -62,10 +60,14 @@ import common.saver.exception.NotFoundFileException;
         try
         {
             String json = Files.readString(savePath, java.nio.charset.StandardCharsets.UTF_8);
-            if (type instanceof ParameterizedType && List.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
-                return GSON.fromJson(json, type);
+            if (json == null || json.trim().isEmpty()) {
+                return null;
             }
             return GSON.fromJson(json, type);
+        }
+        catch(com.google.gson.JsonSyntaxException e)
+        {
+            throw new LoadException("JSON 格式错误: " + savePath, e);
         }
         catch(IOException e)
         {

@@ -49,10 +49,16 @@ public class Car implements ManagedData {
         this.model = model;
     }
 
-    /** 默认构造函数，供 JSON 反序列化使用 */
+    /**
+     * 默认构造函数，供 JSON 反序列化使用。
+     */
     public Car() {
     }
 
+    /**
+     * 获取车辆的唯一 ID。
+     * @return 车辆 ID
+     */
     @Override
     public long getID() {
         return ID;

@@ -1,5 +1,6 @@
 package cars;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -149,4 +150,13 @@ public class CarManager extends ManagerBasic.AbstractManager<Car> {
         }
         return result;
     }
+
+    /**
+     * 获取 Gson 反序列化时使用的类型信息。
+     * @return Car 类型的 Type 对象
+     */
+    @Override
+    public Type getManagerType() {
+        return new com.google.gson.reflect.TypeToken<Car>(){}.getType();
+    }   
 }

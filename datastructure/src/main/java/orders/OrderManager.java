@@ -1,13 +1,22 @@
 package orders;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import ManagerBasic.AbstractManager;
 
+/**
+ * 订单管理器类，负责管理订单的增删改查操作。
+ * 继承自 AbstractManager，采用单例模式。
+ */
 public class OrderManager extends AbstractManager<Order> {
     
     private static OrderManager instance;
 
+    /**
+     * 获取 OrderManager 的单例实例。
+     * @return OrderManager 单例实例
+     */
     public static OrderManager getInstance() {
         if (instance == null) {
             instance = new OrderManager();
@@ -83,4 +92,12 @@ public class OrderManager extends AbstractManager<Order> {
                 .toList();
     }
     
+    /**
+     * 获取 Gson 反序列化时使用的类型信息。
+     * @return Order 类型的 Type 对象
+     */
+    @Override
+    public Type getManagerType() {
+        return new com.google.gson.reflect.TypeToken<Order>(){}.getType();
+    }
 }

@@ -2,6 +2,10 @@ package common.basic;
 
 import java.security.MessageDigest;
 
+/**
+ * MD5 工具类，提供字符串 MD5 哈希计算功能。
+ * 该类为工具类，不可实例化，所有方法均为静态方法。
+ */
 public class MD5Util {
 
         /** 
@@ -13,7 +17,7 @@ public class MD5Util {
        public static String md5(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] bytes = md.digest(input.getBytes());
+            byte[] bytes = md.digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : bytes) {
                 sb.append(String.format("%02x", b));

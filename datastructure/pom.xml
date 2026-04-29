@@ -32,17 +32,42 @@
   </properties>
 
   <build>
-      <plugins>
-          <!-- exec 插件配置：指定默认运行的主类 -->
-          <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>3.6.3</version>
-              <configuration>
-                  <!-- 这里改成你的主类全类名 -->
-                  <mainClass>university.App</mainClass>
-              </configuration>
-          </plugin>
-      </plugins>
+    <plugins>
+      <!-- 1. 打包可执行 Jar（包含所有依赖）-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>university.App</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 2. 直接用 mvn run 运行项目 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.6.3</version>
+        <configuration>
+          <mainClass>university.App</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

@@ -5,9 +5,17 @@ import cars.Car;
 import cars.CarManager;
 import orders.OrderManager;
 
+/**
+ * 车辆业务类，负责车辆的添加、删除、更新、查询等操作。
+ * 所有操作均基于当前登录账户的权限进行验证。
+ */
 public class CarsBusiness {
-    private LoginAccount _account = new LoginAccount();
+    private LoginAccount _account = LoginAccount.getInstance();
 
+    /**
+     * 构造函数，注入登录账户对象。
+     * @param account 登录账户业务对象
+     */
     public CarsBusiness(LoginAccount account) {
         _account = account;
     }
