@@ -15,6 +15,12 @@ public class CarManager extends ManagerBasic.AbstractManager<Car> {
     /** 私有构造函数，防止外部实例化。 */
     private CarManager() {
         super();
+        try{
+            init(0);
+        }catch(Exception e){
+            System.out.println("CarManager 初始化失败。");
+            e.printStackTrace();
+        }
     }
 
     @Override

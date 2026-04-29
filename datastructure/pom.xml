@@ -30,4 +30,19 @@
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <build>
+      <plugins>
+          <!-- exec 插件配置：指定默认运行的主类 -->
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.6.3</version>
+              <configuration>
+                  <!-- 这里改成你的主类全类名 -->
+                  <mainClass>university.App</mainClass>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
 </project>

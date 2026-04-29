@@ -1,11 +1,13 @@
 package ManagerBasic;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.*;
 
 import common.saver.SaveManager;
 import common.saver.exception.LoadException;
@@ -17,6 +19,7 @@ import common.saver.exception.LoadException;
  */
 public abstract class AbstractManager<T extends ManagedData> implements BaseManager<T>
 {
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     /** 使用 HashMap 存储数据项，键为数据项的 ID，值为数据项对象。*/
     protected HashMap<Long, T> items = new HashMap<>(); 
 
@@ -110,6 +113,8 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
     public void load(int id){
         clear();
         List<T> dataList;
+
+        Class<T> actualType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         Type dataListType = new TypeToken<List<T>>() {}.getType();
         try {
             Object loadedData = SaveManager.getInstance().load(getTypeName(), id, dataListType);
@@ -121,9 +126,12 @@ public abstract class AbstractManager<T extends ManagedData> implements BaseMana
                 System.out.println("加载的数据格式不正确，预期为 List<T>，使用默认数据。");
                 dataList = defaultList();
             } else {
-                // 修复：不要强转为 ArrayList，直接赋值给 List 接口
-                // 或者使用 new ArrayList<>((Collection) loadedData) 进行拷贝
-                dataList = (List<T>) loadedData; 
+                List<?> rawList = (List<?>) loadedData;
+                dataList = new ArrayList<>();
+                for (Object obj : rawList) {
+                    T realData = gson.fromJson(gson.toJson(obj), actualType);
+                    dataList.add(realData);
+                }
             }
         
         } catch (LoadException e) {

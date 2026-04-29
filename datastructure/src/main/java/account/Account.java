@@ -35,7 +35,7 @@ public class Account implements ManagerBasic.ManagedData {
     */
     public static long getRawID(String username) {
         var hash = MD5Util.md5(username);
-        return Long.parseLong(hash.substring(0, 16), 16);
+        return Long.parseUnsignedLong(hash.substring(0, 16), 16);
     }
 
     @Override

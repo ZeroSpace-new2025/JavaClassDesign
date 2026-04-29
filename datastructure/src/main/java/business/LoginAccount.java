@@ -111,12 +111,35 @@ public class LoginAccount {
         return AccountManager.getInstance().update(account); // 保存更新后的账户信息
     }
 
+    /**
+     * 尝试更新当前登录账户的密码。
+     * @param newPassword 新密码
+     * @return 如果更新成功返回 true，否则返回 false
+     */
     public boolean tryUpdateThisPassword(String newPassword) {
         if(_account == null) {
             return false; // 没有登录账户，不允许更新密码
         }
         _account.setPassword(newPassword); // 更新密码
         return AccountManager.getInstance().update(_account); // 保存更新后的账户信息
+    }
+
+    /**
+     * 尝试更新一个账户的权限级别，只有当当前登录账户的权限级别等于高于管理员权限级别时才允许更新。
+     * @param username 要更新权限级别的账户的用户名
+     * @param newLevel 新的权限级别
+     * @return 如果更新成功返回 true，否则返回 false
+     */
+    public boolean tryUpdateAccountLevel(String username, AccountLevel newLevel) {
+        if(_account == null || _account.getLevel().getLevel() < AccountLevel.ADMIN.getLevel()) {
+            return false; // 没有登录账户，或当前登录账户权限级别低于管理员，不允许更新账户权限级别
+        }
+        var account = AccountManager.getInstance().getByUsername(username);
+        if (account == null) {
+            return false; // 用户不存在
+        }
+        account.setLevel(newLevel); // 更新账户权限级别
+        return AccountManager.getInstance().update(account); // 保存更新后的账户信息
     }
 
     /**

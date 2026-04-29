@@ -1,9 +1,11 @@
 package common.saver;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,6 +62,9 @@ import common.saver.exception.NotFoundFileException;
         try
         {
             String json = Files.readString(savePath, java.nio.charset.StandardCharsets.UTF_8);
+            if (type instanceof ParameterizedType && List.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
+                return GSON.fromJson(json, type);
+            }
             return GSON.fromJson(json, type);
         }
         catch(IOException e)

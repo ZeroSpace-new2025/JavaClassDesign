@@ -18,7 +18,6 @@ public class Car implements ManagedData {
     private CarState state;
     /** 车辆的ID */
     private long ID;
-
     /** 车辆的型号 */
     private String model;
 

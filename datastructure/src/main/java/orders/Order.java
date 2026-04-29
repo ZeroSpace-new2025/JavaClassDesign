@@ -20,7 +20,6 @@ public class Order implements ManagedData{
     /** 构造函数，初始化订单信息
      * @param orderID 订单 ID
      * @param carID 车辆 ID
-     * @param accountID 账户 ID
      * @param startTime 租赁开始时间，格式为 "yyyyMMdd"
      * @param endTime 租赁结束时间，格式为 "yyyyMMdd"
      * @throws OrderTimeException 

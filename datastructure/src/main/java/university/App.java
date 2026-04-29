@@ -30,10 +30,16 @@ public class App
         return account;
     }
     
+    public void setLogInAccount(Account account) {
+        this.account = account;
+    }
+    
     public static void main(String[] args) {
         SaveManager.getInstance();
         AccountManager.getInstance();
 
+        // 启动主界面
+        visitable.MainFrame.getInstance().init();
         //to be continued
         
     }
