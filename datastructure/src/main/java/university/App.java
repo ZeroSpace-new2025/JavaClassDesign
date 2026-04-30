@@ -38,13 +38,6 @@ public class App
         for (Account acc : list) {
             System.out.println("Username: " + acc.getUsername() + ", Level: " + acc.getLevel()+", Password: " + acc.getPassword());
         }
-
-        if (!account.login("admin", "admin123")) {
-            // 如果 admin 登录失败，尝试登录 user1
-            if (!account.login("user1", "password1")) {
-                System.out.println("[App] Failed to login default accounts, will show login panel");
-            }
-        }
     }
 
     /**
