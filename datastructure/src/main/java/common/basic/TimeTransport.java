@@ -83,7 +83,7 @@ public class TimeTransport {
     public static int getDaysBetween(String start, String end) {
         long startTime = parseTime(start);
         long endTime = parseTime(end);
-        if(endTime < startTime) {
+        if(endTime <= startTime) {
             throw new IllegalArgumentException("结束时间必须晚于开始时间");
         }
         return (int) ((endTime - startTime) / (1000 * 60 * 60 * 24))+1;
